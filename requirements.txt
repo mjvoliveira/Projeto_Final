@@ -3,3 +3,6 @@ numpy>=1.21 #base numérica (dependência implícita)
 pyarrow>=10.0 #leitura/escrita de .parquet
 statsmodels>=0.13 #Holt-Winters, SARIMA, SARIMAX
 matplotlib>=3.5 #EDA e gráficos de previsão
+streamlit>=1.30 #interface web
+openpyxl>=3.1 #leitura/escrita de .xlsx
+altair>=5.0
