@@ -16,3 +16,4 @@ outputs/
 
 # Large raw data files
 data/raw/*.csv
+.streamlit/secrets.toml

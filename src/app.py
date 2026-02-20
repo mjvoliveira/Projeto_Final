@@ -3,6 +3,52 @@ import pandas as pd
 import streamlit as st
 import altair as alt
 from pathlib import Path
+import hmac
+
+# -----------------------------
+# Login
+# -----------------------------
+
+def require_password():
+
+    if st.secrets.get("APP_PASSWORD") is None:
+        st.error("Missing APP_PASSWORD in secrets.")
+        st.stop()
+
+    if st.session_state.get("auth_ok", False):
+        return
+
+    # --- Header com logo + título ---
+    col1, col2 = st.columns([1, 4], vertical_alignment="center")
+
+    with col1:
+        st.image("data/features/controlauto_logo.png", width=200, )
+
+    with col2:
+        st.markdown(
+            """
+            <h1 style='margin-bottom:0;'>Forecast de Inspeções</h1>
+            <p style='color:grey;margin-top:0;'>Plataforma de previsão por centro</p>
+            """,
+            unsafe_allow_html=True
+        )
+
+    st.markdown("---")
+
+    # --- Password input ---
+    pw = st.text_input("Password", type="password")
+
+    if st.button("Entrar", use_container_width=False):
+        if hmac.compare_digest(pw, st.secrets["APP_PASSWORD"]):
+            st.session_state["auth_ok"] = True
+            st.rerun()
+        else:
+            st.error("Password incorreta")
+
+    st.stop()
+
+require_password()
+
 
 # -----------------------------
 # Paths
@@ -393,6 +439,9 @@ st.markdown(
 with st.expander("Ver tabela detalhada"):
     
     tabela = fc_plot.copy()
+
+    # ❗ Remover colunas técnicas usadas apenas no gráfico
+    tabela = tabela.drop(columns=["data_dt", "data_label"], errors="ignore")
 
     # Data curta dependendo da periodicidade
     if periodicidade == "Mensal":
